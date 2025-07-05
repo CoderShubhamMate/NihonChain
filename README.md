@@ -1,4 +1,3 @@
-Here’s your **initial `README.md` draft** for the **NihonChain** project. You can copy this into your repo’s root `README.md` file:
 
 ---
 
