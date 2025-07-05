@@ -1,29 +1,16 @@
-const hre = require("hardhat");
-
 async function main() {
-    // Deploy the NihonChain contract
-    const NihonChain = await hre.ethers.getContractFactory("NihonChain");
-    const nihonChain = await NihonChain.deploy();
-    await nihonChain.deployed();
-    console.log("NihonChain deployed to:", nihonChain.address);
+    const [deployer] = await ethers.getSigners();
 
-    // Deploy the NihonToken contract
-    const NihonToken = await hre.ethers.getContractFactory("NihonToken");
-    const nihonToken = await NihonToken.deploy();
-    await nihonToken.deployed();
-    console.log("NihonToken deployed to:", nihonToken.address);
+    console.log("Deploying with account:", deployer.address);
 
-    // Deploy the BadgeNFT contract
-    const BadgeNFT = await hre.ethers.getContractFactory("BadgeNFT");
-    const badgeNFT = await BadgeNFT.deploy();
-    await badgeNFT.deployed();
-    console.log("BadgeNFT deployed to:", badgeNFT.address);
+    const LearningProgress = await ethers.getContractFactory("LearningProgress");
+    const learningProgress = await LearningProgress.deploy();
+    await learningProgress.deployed();
+
+    console.log("LearningProgress deployed to:", learningProgress.address);
 }
 
-// Execute the deployment script
-main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
