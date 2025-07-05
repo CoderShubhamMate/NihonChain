@@ -1,0 +1,23 @@
+{
+  "name": "nihonchain",
+  "version": "1.0.0",
+  "description": "A blockchain-based learning tracker with token rewards and NFT badges.",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "deploy": "node scripts/deploy.js",
+    "verify": "node scripts/verify.js"
+  },
+  "dependencies": {
+    "hardhat": "^2.0.0",
+    "ethers": "^5.0.0",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^8.0.0",
+    "solidity-coverage": "^0.7.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
