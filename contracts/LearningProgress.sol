@@ -1,26 +1,50 @@
-describe("LearningProgress", function () {
-  it("records and retrieves lessons", async function () {
-    const [owner, user] = await ethers.getSigners();
-    const LP = await ethers.getContractFactory("LearningProgress");
-    const lp = await LP.deploy();
-    await lp.deployed();
+//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-    // user records a lesson
-    await lp.connect(user).recordLesson("Kanji 1");
+contract LearningProgress {
+    address public admin;
 
-    // retrieve
-    const [times, names] = await lp.getLessons(user.address);
-    expect(names[0]).to.equal("Kanji 1");
-  });
+    struct Lesson {
+        string topic;
+        bool isCompleted;
+    }
 
-  it("awards and retrieves badges", async function () {
-    const [_, user] = await ethers.getSigners();
-    const LP = await ethers.getContractFactory("LearningProgress");
-    const lp = await LP.deploy();
-    await lp.deployed();
+    struct UserProgress {
+        uint256 lessonsCompleted;
+    }
 
-    await lp.connect(user).awardBadge("Hiragana Master");
-    const [times, names] = await lp.getBadges(user.address);
-    expect(names[0]).to.equal("Hiragana Master");
-  });
-});
+    mapping(address => UserProgress) internal progress;
+    mapping(address => mapping(uint256 => bool)) internal completedLessons;
+
+    event LessonCompleted(address indexed user, uint256 lessonId);
+    event BadgeAwarded(address indexed user, string badge);
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Not authorized");
+        _;
+    }
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    function completeLesson(uint256 lessonId) public {
+        require(!completedLessons[msg.sender][lessonId], "Already completed");
+
+        completedLessons[msg.sender][lessonId] = true;
+        progress[msg.sender].lessonsCompleted++;
+
+        emit LessonCompleted(msg.sender, lessonId);
+
+        if (progress[msg.sender].lessonsCompleted % 5 == 0) {
+            emit BadgeAwarded(msg.sender, "Milestone Badge");
+        }
+    }
+    function hasCompletedLesson(address user, uint256 lessonId) public view returns (bool) {
+        return completedLessons[user][lessonId];
+    }
+
+    function getLessonsCompleted(address user) public view returns (uint256) {
+        return progress[user].lessonsCompleted;
+    }
+}
